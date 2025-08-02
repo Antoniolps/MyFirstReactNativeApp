@@ -45,6 +45,8 @@ const LoginScreen = () => {
         autoCapitalize='none'
         style={styles.input}
         mode='outlined'
+        outlineColor='#e96707'
+        activeOutlineColor='#e96707'
       />
       <TextInput
         label='Senha'
@@ -53,6 +55,8 @@ const LoginScreen = () => {
         style={styles.input}
         secureTextEntry
         mode='outlined'
+        outlineColor='#e96707'
+        activeOutlineColor='#e96707'
       />
       <Button
         mode='contained'
