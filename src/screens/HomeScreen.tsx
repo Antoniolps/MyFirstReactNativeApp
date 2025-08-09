@@ -3,6 +3,8 @@ import { StyleSheet, View, Image } from 'react-native'
 import { Button, Text } from 'react-native-paper'
 import { RootStackParamList } from '../navigation/types'
 import { useNavigation } from '@react-navigation/native'
+import { auth } from '../firebase/config'
+import PedidoList from '../components/PedidoList'
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>
 
@@ -20,9 +22,20 @@ const HomeScreen = () => {
                 <Text variant='titleLarge'>Meus pedidos</Text>
                 <Button
                     mode='contained'
+                    onPress={() => navigation.navigate('NovoPedido', {})}
                     style={{ width: '100%', marginTop: 20, backgroundColor: '#e96707'}}                
                 >
                     <Text style={{ color: 'white' }}>Novo pedido</Text>
+                </Button>
+
+                <PedidoList/>
+
+                <Button
+                    mode='outlined'
+                    onPress={() => {auth.signOut()}}
+                    style={{ width: '100%', borderColor: '#e96707'}}
+                >
+                    <Text style={{ color: '#e96707' }}>Sair</Text>
                 </Button>
             </View>
         </View>

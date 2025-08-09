@@ -6,6 +6,7 @@ import LoginScreen from "../screens/LoginScreen";
 import CadastroScreen from "../screens/CadastroScreen";
 import HomeScreen from "../screens/HomeScreen";
 import { AuthContext } from "../contexts/Auth.Context";
+import PedidoForm from "../screens/PedidoForm";
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
@@ -23,6 +24,7 @@ export default function AppRoutes() {
                 ) : (
                     <Fragment>
                         <Stack.Screen name="Home" component={HomeScreen} options={{ title: "Meus Pedidos" }} />
+                        <Stack.Screen name="NovoPedido" component={PedidoForm} options={{ title: "Novo Pedido" }} />
                     </Fragment>
                 )}
             </Stack.Navigator>

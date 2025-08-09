@@ -7,5 +7,5 @@ export interface Pedido{
     observacoes: string   
     criadoEm: Timestamp
     uid: string
-    status: 'solicitado' | 'preparando' | 'preparando' | 'entregue'
+    status: 'solicitado' | 'preparado' | 'preparando' | 'entregue'
 }
