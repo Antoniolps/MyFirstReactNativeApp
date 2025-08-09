@@ -5,12 +5,17 @@ import { Picker } from '@react-native-picker/picker'
 import { db, auth } from '../firebase/config'
 import { createUserWithEmailAndPassword, signOut as firebaseSignOut, signOut } from 'firebase/auth'
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
+import { RootStackParamList } from '../navigation/types'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { useNavigation } from '@react-navigation/native'
 
 const CadastroScreen = () => {
     const [role, setRole] = useState<'garcom' | 'cozinha'>('garcom')
     const [email, setEmail] = useState('')
     const [senha, setSenha] = useState('')
     const [confirmarSenha, setConfirmarSenha] = useState('')
+
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Cadastro'>>()
 
     const clearFields = () => {
         setRole('garcom')
@@ -37,7 +42,7 @@ const CadastroScreen = () => {
             Alert.alert('Sucesso', 'Usuário cadastrado com sucesso!')
             clearFields()
 
-            await firebaseSignOut(auth)
+            // await firebaseSignOut(auth)
             
         } catch (error) {
             Alert.alert('Erro', 'Erro ao cadastrar usuário. Verifique os dados e tente novamente.')
@@ -93,6 +98,15 @@ const CadastroScreen = () => {
                 style={styles.button}
             >
                 <Text style={{ color: 'white' }}>Cadastrar</Text>
+            </Button>
+            <Button
+                onPress={() => {
+                    navigation.navigate('Login')
+                    clearFields()
+                }}
+                style={{ marginTop: 10 }}
+            >
+                <Text>Já possui uma conta? Faça login</Text>
             </Button>
         </View>
     )

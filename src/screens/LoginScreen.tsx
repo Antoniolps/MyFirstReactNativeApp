@@ -3,30 +3,34 @@ import { useState } from 'react'
 import { Button, Text, TextInput } from 'react-native-paper'
 import { auth } from '../firebase/config'
 import { signInWithEmailAndPassword } from 'firebase/auth'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { useNavigation } from '@react-navigation/native'
+import { RootStackParamList } from '../navigation/types'
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Login'>>()
 
   const clearFields = () => {
     setEmail('')
     setSenha('')
   }
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !senha) {
       Alert.alert('Por favor, preencha todos os campos.')
       return
     }
 
-    signInWithEmailAndPassword(auth, email, senha)
-      .then(() => {
-        Alert.alert('Sucesso', 'Login realizado com sucesso!')
-        clearFields()
-      })
-      .catch((error) => {
-        Alert.alert('Erro', 'Erro ao realizar login. Verifique suas credenciais.')
-      })
+    try{
+      await signInWithEmailAndPassword(auth, email, senha)
+    }
+    catch (error) {
+      Alert.alert('Erro', 'Erro ao realizar login. Verifique suas credenciais.')
+    }
+
   }
 
   return (
@@ -65,6 +69,16 @@ const LoginScreen = () => {
       >
         <Text style={{ color: 'white' }}>Login</Text>
       </Button>
+      <Button
+        onPress={() => {
+          navigation.navigate('Cadastro')
+          clearFields()
+        }}
+        style={styles.buttonRegister}
+      >
+        <Text>Criar nova conta</Text>
+      </Button>
+
     </View>
   )
 }
@@ -91,6 +105,9 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     backgroundColor: '#e96707',
+    marginTop: 10,
+  },
+  buttonRegister: {
     marginTop: 10,
   },
 })

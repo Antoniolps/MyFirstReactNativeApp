@@ -1,15 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import LoginScreen from './src/screens/LoginScreen';
-import CadastroScreen from './src/screens/CadastroScreen';
+import { PaperProvider } from 'react-native-paper';
+import { AuthProvider } from './src/contexts/Auth.Context';
+import AppRoutes from './src/navigation';
+
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      {/* <CadastroScreen /> */}
-      <LoginScreen />
-      <StatusBar style="auto" />
-    </View>
+    <PaperProvider>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </PaperProvider>
   );
 }
 
