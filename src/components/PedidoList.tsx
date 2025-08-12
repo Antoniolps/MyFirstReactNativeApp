@@ -1,11 +1,11 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { Alert, FlatList, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { Pedido } from '../types/Pedido'
 import { AuthContext } from '../contexts/Auth.Context'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../navigation/types'
-import { collection, onSnapshot, query, where } from 'firebase/firestore'
+import { collection, deleteDoc, doc, onSnapshot, query, where } from 'firebase/firestore'
 import { db } from '../firebase/config'
 import { Card, Chip, Button as PaperButton } from 'react-native-paper'
 
@@ -39,6 +39,29 @@ const PedidoList = () => {
 
     }, [user])
 
+    const handleDelete = (id?: string) => {
+        if (!id) return
+        Alert.alert('Excluir pedido', 'Tem certeza que deseja excluir este pedido?', [
+            { text: 'Cancelar', style: 'cancel' },
+            { 
+                text: 'Excluir', 
+                style: 'destructive', 
+                onPress: async () => {
+                    try{
+                        await deleteDoc(doc(db, 'pedidos', id))
+                    }catch(error){
+                        console.error("Erro ao excluir pedido:", error)
+                    }
+                }
+            }
+        ])
+    }
+
+    const handleEdit = (pedido: Pedido) => {
+        if (!pedido) return
+        navigation.navigate('NovoPedido', { pedido})
+    }
+
     const renderItem = ({ item }: { item: Pedido }) => (
         <Card
             style={{
@@ -62,8 +85,11 @@ const PedidoList = () => {
                 {item.observacoes ? <Text>Obs: {item.observacoes}</Text> : null}
             </Card.Content>
             <Card.Actions>
-                <PaperButton style={{ borderColor: '#e96707' }}>
-                    <Text style={{ color: '#e96707' }}>Excluir</Text>
+                <PaperButton style={{ borderColor: '#e96707' }} onPress={() => handleEdit(item)}>
+                    <Text style={{ color: '#e96707' }}>Editar</Text>
+                </PaperButton>
+                <PaperButton style={{ backgroundColor: '#e96707' }} onPress={() => handleDelete(item.id)}>
+                    <Text style={{ color: 'white' }}>Excluir</Text>
                 </PaperButton>
                 {item.status === 'preparado' && (
                     <PaperButton>
