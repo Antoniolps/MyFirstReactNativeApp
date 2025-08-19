@@ -5,7 +5,7 @@ import { AuthContext } from '../contexts/Auth.Context'
 import { useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { RootStackParamList } from '../navigation/types'
-import { collection, deleteDoc, doc, onSnapshot, query, where } from 'firebase/firestore'
+import { collection, deleteDoc, doc, onSnapshot, query, serverTimestamp, updateDoc, where } from 'firebase/firestore'
 import { db } from '../firebase/config'
 import { Card, Chip, Button as PaperButton } from 'react-native-paper'
 
@@ -62,6 +62,27 @@ const PedidoList = () => {
         navigation.navigate('NovoPedido', { pedido})
     }
 
+    const changeStatus = (p: Pedido) => {
+        if (!p.id) return
+
+        Alert.alert("Entregue", `Confirma "ENTREGUE"?`, [
+            {
+                text: "Cancelar",
+                style: "cancel"
+            },
+            {
+                text: "Entregue",
+                onPress: async () => {
+                    try {
+                        await updateDoc(doc(db, 'pedidos', p.id!), { status: 'entregue', entregueEm: serverTimestamp() })
+                    } catch (err) {
+                        Alert.alert('Erro', 'Não foi possível atualizar o status do pedido.')
+                    }
+                }
+            }
+        ])
+    }
+
     const renderItem = ({ item }: { item: Pedido }) => (
         <Card
             style={{
@@ -85,17 +106,19 @@ const PedidoList = () => {
                 {item.observacoes ? <Text>Obs: {item.observacoes}</Text> : null}
             </Card.Content>
             <Card.Actions>
-                <PaperButton style={{ borderColor: '#e96707' }} onPress={() => handleEdit(item)}>
+                <PaperButton style={{ borderColor: '#e96707'}} onPress={() => handleEdit(item)}>
                     <Text style={{ color: '#e96707' }}>Editar</Text>
                 </PaperButton>
                 <PaperButton style={{ backgroundColor: '#e96707' }} onPress={() => handleDelete(item.id)}>
                     <Text style={{ color: 'white' }}>Excluir</Text>
                 </PaperButton>
-                {item.status === 'preparado' && (
-                    <PaperButton>
-                        Marcar Entregue
+                <View>
+                    {item.status === 'preparado' && (
+                    <PaperButton style={{ backgroundColor: '#4caf50' }} onPress={() => changeStatus(item)}>
+                        <Text style={{ color: 'white' }}>Marcar Entregue</Text>
                     </PaperButton>
                 )}
+                </View>
             </Card.Actions>
         </Card>
     )
